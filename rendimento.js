@@ -1,7 +1,7 @@
 function rendimento(valorInicial = 0, valorMensal, meses, taxaJuros) {
     let valorTotal = valorInicial;
     let porcentagemImpostoRenda = 22.5;
-    const rendimentoMensal = 1 + ((1 - (porcentagemImpostoRenda / 100)) * ((taxaJuros / 12) / 100));
+    let rendimentoMensal = 1 + ((1 - (porcentagemImpostoRenda / 100)) * ((taxaJuros / 12) / 100));
     const dataInicial = new Date();
     const mesInicial = dataInicial.getMonth() + 1;
     const anoInicial = dataInicial.getFullYear();
@@ -44,6 +44,8 @@ function rendimento(valorInicial = 0, valorMensal, meses, taxaJuros) {
                 porcentagemImpostoRenda = 15;
                 break;
         }
+
+        rendimentoMensal = 1 + ((1 - (porcentagemImpostoRenda / 100)) * ((taxaJuros / 12) / 100));
 
         mesAtual++;
     }
