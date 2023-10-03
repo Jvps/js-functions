@@ -75,7 +75,6 @@ function generateCards(numberOfCards) {
                 });
             }
         }
-        console.log(availableCardsArray)
     }
 
     let returnArray = [];
