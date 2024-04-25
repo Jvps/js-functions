@@ -1,54 +1,46 @@
-function rendimento(valorInicial = 0, valorMensal, meses, taxaJuros) {
-    let valorTotal = valorInicial;
-    let porcentagemImpostoRenda = 22.5;
-    let rendimentoMensal = 1 + ((1 - (porcentagemImpostoRenda / 100)) * ((taxaJuros / 12) / 100));
-    const dataInicial = new Date();
-    const mesInicial = dataInicial.getMonth() + 1;
-    const anoInicial = dataInicial.getFullYear();
-    let mesAtual = mesInicial;
-    let anoAtual = anoInicial;
+function rendimentos (investimentoInicial = 0, investimentoMensal = 0, meses = 12, taxaRendimento = 12, mostrarArrayMensal = false) {
+    let impostoRenda;
+    let countMensal = 0;
+    let investimentos = [];
+    const dataAtual = new Date();
 
-    for (let i = 0; i <= meses; i++) {
-        
-        if (i == 0) { 
-            console.log('=== ANO: ' + anoInicial + ' ===');
-            if (mesAtual < 10) {
-                console.log('0' + mesInicial + '/' + anoInicial + ': R$' + valorInicial.toFixed(2));
-            } else {
-                console.log(mesInicial + '/' + anoInicial + ': R$' + valorInicial.toFixed(2));
-            }
-        } else {
-            if (mesAtual % 12 == 1) {
-                mesAtual = 1;
-                anoAtual++;
-                console.log('=== ANO: ' + anoAtual + ' ===');
-            }
-            let diferenca = valorTotal;
-            valorTotal = ((valorTotal + valorMensal) * rendimentoMensal);
-            diferenca = valorTotal - (diferenca + valorMensal);
-            if (mesAtual < 10) {
-                console.log('0' + mesAtual + '/' + anoAtual + ': R$' + valorTotal.toFixed(2) + ' | Ganhos com juros: R$' + diferenca.toFixed(2));
-            } else {
-                console.log(mesAtual + '/' + anoAtual + ': R$' + valorTotal.toFixed(2) + ' | Ganhos com juros: R$' + diferenca.toFixed(2));
-            }
-        }
-
-        switch (i) {
+    do {
+        switch (countMensal) {
+            case 0:
+                impostoRenda = 22.5;
+                break;
             case 6:
-                porcentagemImpostoRenda = 20;
+                impostoRenda = 20;
                 break;
             case 12:
-                porcentagemImpostoRenda = 17.5;
+                impostoRenda = 17.5;
                 break;
             case 18:
-                porcentagemImpostoRenda = 15;
+                impostoRenda = 15;
                 break;
         }
 
-        rendimentoMensal = 1 + ((1 - (porcentagemImpostoRenda / 100)) * ((taxaJuros / 12) / 100));
+        if (countMensal === 0) {
+            investimentos.push(investimentoInicial);
+        } else {
+            investimentos = investimentos.map((valorMensal) => {
+                return valorMensal + (valorMensal * (taxaRendimento / 12 / 100) * (1 - (impostoRenda / 100)));
+            });
+            investimentos.push(investimentoMensal);
+        }
 
-        mesAtual++;
+        if (dataAtual.getMonth() === 0) console.log(`=== ${dataAtual.getFullYear()} ===`);
+        const dataFormatada = `${(dataAtual.getMonth() + 1).toString().padStart(2, '0')}/${dataAtual.getFullYear().toString().padStart(2, '0')}`;
+        console.log(`${dataFormatada}: R$${investimentos.reduce((total, atual) => total + atual, 0).toFixed(2)}`);
+        dataAtual.setMonth(dataAtual.getMonth() + 1);
+
+        countMensal++;
     }
+    while (countMensal <= meses);
 
-    return parseFloat(valorTotal.toFixed(2));
+    if (mostrarArrayMensal) console.log(investimentos);
+    console.log(`===== Resultados: =====`)
+    console.log(`Valor investido: R$${(investimentoInicial + (meses * investimentoMensal)).toFixed(2)}`);
+    console.log(`Valor final: R$${investimentos.reduce((total, atual) => total + atual, 0).toFixed(2)}`);
+    console.log(`Ganhos com juros: R$${(investimentos.reduce((total, atual) => total + atual, 0) - (investimentoInicial + (meses * investimentoMensal))).toFixed(2)}`);
 }
